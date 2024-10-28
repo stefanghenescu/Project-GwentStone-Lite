@@ -6,14 +6,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import checker.CheckerConstants;
-import fileio.Input;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import fileio.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -69,24 +70,35 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
-        /*
-         * TODO Implement your function here
-         *
-         * How to add output to the output array?
-         * There are multiple ways to do this, here is one example:
-         *
-         * ObjectMapper mapper = new ObjectMapper();
-         *
-         * ObjectNode objectNode = mapper.createObjectNode();
-         * objectNode.put("field_name", "field_value");
-         *
-         * ArrayNode arrayNode = mapper.createArrayNode();
-         * arrayNode.add(objectNode);
-         *
-         * output.add(arrayNode);
-         * output.add(objectNode);
-         *
-         */
+        for (GameInput game : inputData.getGames()) {
+
+            Player playerOne = Player.initializePlayerOne(game, inputData);
+            Player playerTwo = Player.initializePlayerTwo(game, inputData);
+
+            // tragem cate o carte daca se poate si o punem in mana
+            if (playerOne.getNrCardsInDeck() > 0) {
+                // adaugam o carte din deck in mana
+                playerOne.getHand().add(playerOne.getDeck().get(0));
+                // scoatem o din deck
+                playerOne.getDeck().remove(0);
+                // actualizam dimensiunea deck-ului
+                playerOne.setNrCardsInDeck(playerOne.getNrCardsInDeck() - 1);
+            }
+
+            // tragem cate o carte daca se poate si o punem in mana
+            if (playerTwo.getNrCardsInDeck() > 0) {
+                // adaugam o carte din deck in mana
+                playerTwo.getHand().add(playerTwo.getDeck().get(0));
+                // scoatem o din deck
+                playerTwo.getDeck().remove(0);
+                // actualizam dimensiunea deck-ului
+                playerTwo.setNrCardsInDeck(playerTwo.getNrCardsInDeck() - 1);
+            }
+
+            for (ActionsInput action : game.getActions()) {
+                Game.actionOutput(objectMapper, output, game, playerOne, playerTwo, action);
+            }
+        }
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);
