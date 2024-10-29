@@ -52,24 +52,23 @@ public class Hero {
 
     @Override
     public String toString() {
-        return "CardInput{"
-                +  "mana="
+        return "Hero{"
+                + "mana="
                 + mana
-                +  ", attackDamage="
+                + ", health="
                 + health
-                +  ", description='"
+                + ", description='"
                 + description
                 + '\''
                 + ", colors="
                 + colors
                 + ", name='"
-                +  ""
                 + name
                 + '\''
                 + '}';
     }
 
-    public static Hero initializeHeroPlayerOne(Player playerOne, StartGameInput startGame) {
+    public static Hero initializeHeroPlayerOne(StartGameInput startGame) {
         Hero heroPlayerOne = new Hero();
         heroPlayerOne.setMana(startGame.getPlayerOneHero().getMana());
         heroPlayerOne.setDescription(startGame.getPlayerOneHero().getDescription());
@@ -78,7 +77,7 @@ public class Hero {
         return heroPlayerOne;
     }
 
-    public static Hero initializeHeroPlayerTwo(Player playerTwo, StartGameInput startGame) {
+    public static Hero initializeHeroPlayerTwo(StartGameInput startGame) {
         Hero heroPlayerTwo = new Hero();
         heroPlayerTwo.setMana(startGame.getPlayerTwoHero().getMana());
         heroPlayerTwo.setDescription(startGame.getPlayerTwoHero().getDescription());
