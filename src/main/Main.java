@@ -70,33 +70,18 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
-        for (GameInput game : inputData.getGames()) {
+        for (GameInput gameInput : inputData.getGames()) {
+            Table table = new Table();
+            Game game = new Game();
 
-            Player playerOne = Player.initializePlayerOne(game, inputData);
-            Player playerTwo = Player.initializePlayerTwo(game, inputData);
+            Player playerOne = Player.initializePlayerOne(gameInput, inputData);
+            Player playerTwo = Player.initializePlayerTwo(gameInput, inputData);
 
-            // tragem cate o carte daca se poate si o punem in mana
-            if (playerOne.getNrCardsInDeck() > 0) {
-                // adaugam o carte din deck in mana
-                playerOne.getHand().add(playerOne.getDeck().get(0));
-                // scoatem o din deck
-                playerOne.getDeck().remove(0);
-                // actualizam dimensiunea deck-ului
-                playerOne.setNrCardsInDeck(playerOne.getNrCardsInDeck() - 1);
-            }
+            playerOne.addCardToHand();
+            playerTwo.addCardToHand();
 
-            // tragem cate o carte daca se poate si o punem in mana
-            if (playerTwo.getNrCardsInDeck() > 0) {
-                // adaugam o carte din deck in mana
-                playerTwo.getHand().add(playerTwo.getDeck().get(0));
-                // scoatem o din deck
-                playerTwo.getDeck().remove(0);
-                // actualizam dimensiunea deck-ului
-                playerTwo.setNrCardsInDeck(playerTwo.getNrCardsInDeck() - 1);
-            }
-
-            for (ActionsInput action : game.getActions()) {
-                Game.actionOutput(objectMapper, output, game, playerOne, playerTwo, action);
+            for (ActionsInput action : gameInput.getActions()) {
+                game.actionOutput(objectMapper, output, table, gameInput, playerOne, playerTwo, action);
             }
         }
 
