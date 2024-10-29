@@ -20,6 +20,7 @@ public final class Player {
 
     public Player() {
         this.hand = new ArrayList<>();
+        this.playerMana = 1;
     }
 
     public int getIndex() {
@@ -78,6 +79,37 @@ public final class Player {
         this.playerMana = playerMana;
     }
 
+    public void addCardToHand() {
+        if (this.getNrCardsInDeck() > 0) {
+            // adaugam o carte din deck in mana
+            this.getHand().add(this.getDeck().get(0));
+            // scoatem o din deck
+            this.getDeck().remove(0);
+            // actualizam dimensiunea deck-ului
+            this.setNrCardsInDeck(this.getNrCardsInDeck() - 1);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Player{"
+                + "index="
+                + index
+                + ", nrCardsInDeck="
+                + nrCardsInDeck
+                +", shuffleSeed="
+                + shuffleSeed
+                + ", deck="
+                + deck
+                + ", hero="
+                + hero
+                + ", hand="
+                + hand
+                + ", playerMana="
+                + playerMana
+                + '}';
+    }
+
     public static Player initializePlayerOne(GameInput game, Input inputData) {
         Player playerOne = new Player();
         playerOne.setIndex(1);
@@ -99,7 +131,7 @@ public final class Player {
         Collections.shuffle(playerOne.getDeck(), randomPlayerOne);
 
         // fiecare jucator primeste un erou
-        Hero heroPlayerOne = Hero.initializeHeroPlayerOne(playerOne, startGame);
+        Hero heroPlayerOne = Hero.initializeHeroPlayerOne(startGame);
 
         playerOne.setHero(heroPlayerOne);
         return playerOne;
@@ -126,9 +158,10 @@ public final class Player {
         Collections.shuffle(playerTwo.getDeck(), randomPlayerTwo);
 
         // fiecare jucator primeste un erou
-        Hero heroPlayerTwo = Hero.initializeHeroPlayerTwo(playerTwo, startGame);
+        Hero heroPlayerTwo = Hero.initializeHeroPlayerTwo(startGame);
 
         playerTwo.setHero(heroPlayerTwo);
         return playerTwo;
     }
+
 }
