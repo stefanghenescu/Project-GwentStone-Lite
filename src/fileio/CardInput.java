@@ -1,5 +1,6 @@
 package fileio;
 
+import javax.smartcardio.Card;
 import java.util.ArrayList;
 
 public final class CardInput {
@@ -72,6 +73,21 @@ public final class CardInput {
 
     public boolean isFrozen() {
         return frozen == 1;
+    }
+
+
+    public static CardInput copyCard(CardInput card) {
+        CardInput copiedCard = new CardInput();
+
+        copiedCard.setMana(card.getMana());
+        copiedCard.setAttackDamage(card.getAttackDamage());
+        copiedCard.setHealth(card.getHealth());
+        copiedCard.setDescription(card.getDescription());
+        copiedCard.setColors(new ArrayList<>(card.getColors()));
+        copiedCard.setName(card.getName());
+        copiedCard.setFrozen(card.getFrozen());
+
+        return copiedCard;
     }
 
     @Override

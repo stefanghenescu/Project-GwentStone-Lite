@@ -5,6 +5,7 @@ import fileio.GameInput;
 import fileio.Input;
 import fileio.StartGameInput;
 
+import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -52,7 +53,11 @@ public final class Player {
     }
 
     public void setDeck(final ArrayList<CardInput> deck) {
-        this.deck = deck;
+        ArrayList<CardInput> copyDeck = new ArrayList<>();
+        for (CardInput card : deck) {
+            copyDeck.add(CardInput.copyCard(card));
+        }
+        this.deck = copyDeck;
     }
 
     public Hero getHero() {
