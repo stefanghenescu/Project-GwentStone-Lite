@@ -18,7 +18,7 @@ public class Table {
         return rows.get(rowIndex);
     }
 
-    public String addCardToRow(Player player, CardInput card) {
+    public String addCardToTable(Player player, CardInput card) {
         int playerIdx = player.getIndex();
         if (player.getPlayerMana() < card.getMana()) {
             return "Not enough mana to place card on table.";
@@ -47,19 +47,8 @@ public class Table {
         return null;
     }
 
-    public void removeCardFromRow(int rowIndex, int cardIndex) {
+    public void removeCardFromTable(int rowIndex, int cardIndex) {
         ArrayList<CardInput> row = getRow(rowIndex);
-
         row.remove(cardIndex);
-        shiftLeft(row);
-    }
-
-   private void shiftLeft(ArrayList<CardInput> row) {
-        for (int i = 1; i < row.size(); i++) {
-            row.set(i - 1, row.get(i));
-        }
-        if (!row.isEmpty()) {
-            row.remove(row.size() - 1);
-        }
     }
 }
