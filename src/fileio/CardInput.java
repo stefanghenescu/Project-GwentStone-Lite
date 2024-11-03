@@ -1,6 +1,5 @@
 package fileio;
 
-import javax.smartcardio.Card;
 import java.util.ArrayList;
 
 public final class CardInput {
@@ -10,9 +9,12 @@ public final class CardInput {
     private String description;
     private ArrayList<String> colors;
     private String name;
-    private int frozen;
+    private boolean frozen;
+    private boolean attackedThisTurn;
 
     public CardInput() {
+        frozen = false;
+        attackedThisTurn = false;
     }
 
     public int getMana() {
@@ -63,18 +65,21 @@ public final class CardInput {
         this.name = name;
     }
 
-    public int getFrozen() {
+    public boolean isFrozen() {
         return frozen;
     }
 
-    public void setFrozen(final int frozen) {
+    public void setFrozen(final boolean frozen) {
         this.frozen = frozen;
     }
 
-    public boolean isFrozen() {
-        return frozen == 1;
+    public boolean hasAttackedThisTurn() {
+        return attackedThisTurn;
     }
 
+    public void setAttackedThisTurn(boolean attackedThisTurn) {
+        this.attackedThisTurn = attackedThisTurn;
+    }
 
     public static CardInput copyCard(CardInput card) {
         CardInput copiedCard = new CardInput();
@@ -85,9 +90,13 @@ public final class CardInput {
         copiedCard.setDescription(card.getDescription());
         copiedCard.setColors(new ArrayList<>(card.getColors()));
         copiedCard.setName(card.getName());
-        copiedCard.setFrozen(card.getFrozen());
+        copiedCard.setFrozen(card.isFrozen());
 
         return copiedCard;
+    }
+
+    public boolean isTank() {
+        return this.getName().equals("Goliath") || this.getName().equals("Warden");
     }
 
     @Override
