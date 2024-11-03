@@ -6,12 +6,15 @@ import java.util.ArrayList;
 
 public class Hero {
     private int mana;
-    private final int health = 30;
+    private int health;
     private String description;
     private ArrayList<String> colors;
     private String name;
+    private boolean attackedThisTurn;
 
     public Hero() {
+        health = 30;
+        attackedThisTurn = false;
     }
 
     public int getMana() {
@@ -24,6 +27,10 @@ public class Hero {
 
     public int getHealth() {
         return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public String getDescription() {
@@ -48,6 +55,14 @@ public class Hero {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public boolean hasAttackedThisTurn() {
+        return attackedThisTurn;
+    }
+
+    public void setAttackedThisTurn(boolean attackedThisTurn) {
+        this.attackedThisTurn = attackedThisTurn;
     }
 
     @Override
