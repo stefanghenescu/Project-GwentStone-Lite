@@ -95,6 +95,55 @@ public final class Player {
         }
     }
 
+    public static void defrostCards(int playerIdx, Table table) {
+        if (playerIdx == 1) {
+            for (CardInput card : table.getRow(2)) {
+                if (card.isFrozen()) {
+                    card.setFrozen(false);
+                }
+            }
+            for (CardInput card : table.getRow(3)) {
+                if (card.isFrozen()) {
+                    card.setFrozen(false);
+                }
+            }
+        } else if (playerIdx == 2) {
+            for (CardInput card : table.getRow(0)) {
+                if (card.isFrozen()) {
+                    card.setFrozen(false);
+                }
+            }
+            for (CardInput card : table.getRow(1)) {
+                if (card.isFrozen()) {
+                    card.setFrozen(false);
+                }
+            }
+        }
+    }
+
+    public static void rechargeCardsAttack(Table table) {
+        for (CardInput card : table.getRow(2)) {
+            if (card.hasAttackedThisTurn()) {
+                card.setAttackedThisTurn(false);
+            }
+        }
+        for (CardInput card : table.getRow(3)) {
+            if (card.hasAttackedThisTurn()) {
+                card.setAttackedThisTurn(false);
+            }
+        }
+        for (CardInput card : table.getRow(0)) {
+            if (card.hasAttackedThisTurn()) {
+                card.setAttackedThisTurn(false);
+            }
+        }
+        for (CardInput card : table.getRow(1)) {
+            if (card.hasAttackedThisTurn()) {
+                card.setAttackedThisTurn(false);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "Player{"
