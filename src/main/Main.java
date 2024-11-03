@@ -69,8 +69,7 @@ public final class Main {
                 Input.class);
 
         ArrayNode output = objectMapper.createArrayNode();
-
-        for (GameInput gameInput : inputData.getGames()) {
+       for (GameInput gameInput : inputData.getGames()) {
             Table table = new Table();
             Game game = new Game();
 
@@ -81,7 +80,8 @@ public final class Main {
             playerTwo.addCardToHand();
 
             for (ActionsInput action : gameInput.getActions()) {
-                game.actionOutput(objectMapper, output, table, gameInput, playerOne, playerTwo, action);
+                game.actionOutput(objectMapper, output, table, gameInput, playerOne, playerTwo,
+                        action);
             }
         }
 
