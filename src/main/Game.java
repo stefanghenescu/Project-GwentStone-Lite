@@ -37,7 +37,7 @@ public final class Game {
 
     public void actionOutput(ObjectMapper objectMapper, ArrayNode output, Table table,
                              GameInput game, Player playerOne, Player playerTwo,
-                             ActionsInput action) {
+                             ActionsInput action, GamesStats gamesStats) {
         ObjectNode commandNode = objectMapper.createObjectNode();
 
         if (action.getCommand().equals("getPlayerDeck")) {
@@ -405,6 +405,7 @@ public final class Game {
 
                     if (playerTwo.getHero().getHealth() <= 0) {
                         // jucatorul 1 a castigat, eroul este mort
+                        gamesStats.incrementWinsPlayerOne();
                         commandNode.put("gameEnded", "Player one killed the enemy hero.");
                         output.add(commandNode);
                     }
@@ -416,6 +417,7 @@ public final class Game {
 
                     if (playerOne.getHero().getHealth() <= 0) {
                         // jucatorul 2 a castigat, eroul este mort
+                        gamesStats.incrementWinsPlayerTwo();
                         commandNode.put("gameEnded", "Player two killed the enemy hero.");
                         output.add(commandNode);
                     }
@@ -510,6 +512,18 @@ public final class Game {
                 }
             }
             commandNode.set("output", frozenCardsOnTable);
+            output.add(commandNode);
+        } else if (action.getCommand().equals("getPlayerOneWins")) {
+            commandNode.put("command", action.getCommand());
+            commandNode.put("output", gamesStats.getWinsPlayerOne());
+            output.add(commandNode);
+        } else if (action.getCommand().equals("getPlayerTwoWins")) {
+            commandNode.put("command", action.getCommand());
+            commandNode.put("output", gamesStats.getWinsPlayerTwo());
+            output.add(commandNode);
+        } else if (action.getCommand().equals("getTotalGamesPlayed")) {
+            commandNode.put("command", action.getCommand());
+            commandNode.put("output", gamesStats.getGamesPlayed());
             output.add(commandNode);
         }
     }
