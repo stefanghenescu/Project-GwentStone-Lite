@@ -104,7 +104,7 @@ public final class Game {
                 player = playerOne;
             } else {
                 player = playerTwo;
-          }
+            }
             Action.actionGetMana(player, output, action, jsonOutput);
         } else if (action.getCommand().equals("getCardsOnTable")) {
             output.add(jsonOutput.generateOutput(action, table));
@@ -156,34 +156,10 @@ public final class Game {
                 }
                 attackerCard.setAttackedThisTurn(true);
             } else {
-                ObjectNode coordinatesAttacker = objectMapper.createObjectNode();
-                coordinatesAttacker.put("x", action.getCardAttacker().getX());
-                coordinatesAttacker.put("y", action.getCardAttacker().getY());
-
-                ObjectNode coordinatesAttacked = objectMapper.createObjectNode();
-                coordinatesAttacked.put("x", action.getCardAttacked().getX());
-                coordinatesAttacked.put("y", action.getCardAttacked().getY());
-
-                commandNode.put("command", action.getCommand());
-                commandNode.set("cardAttacker", coordinatesAttacker);
-                commandNode.set("cardAttacked", coordinatesAttacked);
-                commandNode.put("error", error);
-                output.add(commandNode);
+                output.add(jsonOutput.generateOutputCoordinates(action, error));
             }
         } else if (action.getCommand().equals("getCardAtPosition")) {
-            commandNode.put("command", action.getCommand());
-            commandNode.put("x", action.getX());
-            commandNode.put("y", action.getY());
-
-            String error = null;
-            if (table.getRow(action.getX()).size() <= action.getY()) {
-                error = "No card available at that position.";
-                commandNode.put("output", error);
-            } else {
-                GameCard card = table.getRow(action.getX()).get(action.getY());
-                commandNode.set("output", card.createCardNode(objectMapper));
-            }
-            output.add(commandNode);
+            output.add(jsonOutput.generateOutputCardAtPosition(action, table));
         } else if (action.getCommand().equals("cardUsesAbility")) {
             int attackerRow = action.getCardAttacker().getX();
             int attackerColumn = action.getCardAttacker().getY();
@@ -239,19 +215,7 @@ public final class Game {
                 }
                 attackerCard.setAttackedThisTurn(true);
             } else {
-                ObjectNode coordinatesAttacker = objectMapper.createObjectNode();
-                coordinatesAttacker.put("x", action.getCardAttacker().getX());
-                coordinatesAttacker.put("y", action.getCardAttacker().getY());
-
-                ObjectNode coordinatesAttacked = objectMapper.createObjectNode();
-                coordinatesAttacked.put("x", action.getCardAttacked().getX());
-                coordinatesAttacked.put("y", action.getCardAttacked().getY());
-
-                commandNode.put("command", action.getCommand());
-                commandNode.set("cardAttacker", coordinatesAttacker);
-                commandNode.set("cardAttacked", coordinatesAttacked);
-                commandNode.put("error", error);
-                output.add(commandNode);
+                output.add(jsonOutput.generateOutputCoordinates(action, error));
             }
         } else if (action.getCommand().equals("useAttackHero")) {
             int attackerRow = action.getCardAttacker().getX();
@@ -356,27 +320,10 @@ public final class Game {
                 currentPlayer.setPlayerMana(currentPlayer.getPlayerMana() - currentHero.getMana());
                 currentHero.setAttackedThisTurn(true);
             } else {
-                commandNode.put("command", action.getCommand());
-                commandNode.put("affectedRow", action.getAffectedRow());
-                commandNode.put("error", error);
-                output.add(commandNode);
+                output.add(jsonOutput.generateOutputAffectedRow(action, error));
             }
         } else if (action.getCommand().equals("getFrozenCardsOnTable")) {
-            commandNode.put("command", action.getCommand());
-            ArrayNode frozenCardsOnTable = objectMapper.createArrayNode();
-
-            for (int rowIndex = 0; rowIndex < 4; rowIndex++) {
-                ArrayNode rowNode = objectMapper.createArrayNode();
-                ArrayList<GameCard> row = table.getRow(rowIndex);
-
-                for (GameCard card : row) {
-                    if (card.isFrozen()) {
-                        frozenCardsOnTable.add(card.createCardNode(objectMapper));
-                    }
-                }
-            }
-            commandNode.set("output", frozenCardsOnTable);
-            output.add(commandNode);
+            output.add(jsonOutput.generateOutputFrozenCards(action, table));
         } else if (action.getCommand().equals("getPlayerOneWins")) {
             output.add(jsonOutput.generateOutput(action, gamesStats.getWinsPlayerOne()));
         } else if (action.getCommand().equals("getPlayerTwoWins")) {
