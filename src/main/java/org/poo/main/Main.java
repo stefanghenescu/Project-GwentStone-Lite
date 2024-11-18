@@ -73,18 +73,17 @@ public final class Main {
         GamesStats gamesStats = new GamesStats();
 
         for (GameInput gameInput : inputData.getGames()) {
-            Table table = new Table();
-            Game game = new Game();
-
             Player playerOne = Player.initializePlayerOne(gameInput, inputData);
             Player playerTwo = Player.initializePlayerTwo(gameInput, inputData);
 
             playerOne.addCardToHand();
             playerTwo.addCardToHand();
 
+            Table table = new Table();
+            Game game = new Game(playerOne, playerTwo);
+
             for (ActionsInput action : gameInput.getActions()) {
-                game.actionOutput(objectMapper, output, table, gameInput, playerOne, playerTwo,
-                        action, gamesStats);
+                game.actionOutput(objectMapper, output, table, gameInput, action, gamesStats);
             }
         }
 
