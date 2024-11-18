@@ -57,9 +57,4 @@ public class Action {
                                      ActionsInput action, JsonOutput jsonOutput) {
         output.add(jsonOutput.generateOutput(action, player));
     }
-
-    public static void actionGetCardsTable(ActionsInput action, Table table, ArrayNode output,
-                                          JsonOutput jsonOutput) {
-        output.add(jsonOutput.generateOutput(action, table));
-    }
 }
