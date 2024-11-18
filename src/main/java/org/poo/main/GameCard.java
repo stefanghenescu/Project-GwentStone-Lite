@@ -92,6 +92,9 @@ public class GameCard {
         return false;
     }
 
+    public void useAbility(GameCard attackedCard) {
+    }
+
     public ObjectNode createCardNode(ObjectMapper objectMapper) {
         return null;
     }
