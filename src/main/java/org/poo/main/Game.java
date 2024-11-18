@@ -144,21 +144,7 @@ public final class Game {
                     } else if (getPlayerTurn() == 2 && action.getCardAttacked().getX() < 2) {
                         error = "Attacked card does not belong to the enemy.";
                     } else if (!attackedCard.isTank()) {
-                        if (getPlayerTurn() == 1) {
-                            for (GameCard card : table.getRow(1)) {
-                                if (card.isTank()) {
-                                    error = "Attacked card is not of type 'Tank'.";
-                                    break;
-                                }
-                            }
-                        } else if (getPlayerTurn() == 2) {
-                            for (GameCard card : table.getRow(2)) {
-                                if (card.isTank()) {
-                                    error = "Attacked card is not of type 'Tank'.";
-                                    break;
-                                }
-                            }
-                        }
+                        error = errorAttackTank(table, error);
                     }
                 }
 
@@ -183,21 +169,7 @@ public final class Game {
                 } else if (attackerCard.hasAttackedThisTurn()) {
                     error = "Attacker card has already attacked this turn.";
                 } else {
-                    if (getPlayerTurn() == 1) {
-                        for (GameCard card : table.getRow(1)) {
-                            if (card.isTank()) {
-                                error = "Attacked card is not of type 'Tank'.";
-                                break;
-                            }
-                        }
-                    } else if (getPlayerTurn() == 2) {
-                        for (GameCard card : table.getRow(2)) {
-                            if (card.isTank()) {
-                                error = "Attacked card is not of type 'Tank'.";
-                                break;
-                            }
-                        }
-                    }
+                    error = errorAttackTank(table, error);
                 }
 
                 if (error == null) {
@@ -282,5 +254,24 @@ public final class Game {
                 output.add(jsonOutput.generateOutput(action, gamesStats.getGamesPlayed()));
                 break;
         }
+    }
+
+    private String errorAttackTank(Table table, String error) {
+        if (getPlayerTurn() == 1) {
+            for (GameCard card : table.getRow(1)) {
+                if (card.isTank()) {
+                    error = "Attacked card is not of type 'Tank'.";
+                    break;
+                }
+            }
+        } else if (getPlayerTurn() == 2) {
+            for (GameCard card : table.getRow(2)) {
+                if (card.isTank()) {
+                    error = "Attacked card is not of type 'Tank'.";
+                    break;
+                }
+            }
+        }
+        return error;
     }
 }
