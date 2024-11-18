@@ -6,19 +6,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.ActionsInput;
 import org.poo.fileio.GameInput;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 
 public final class Game {
     private int turns;
     private int playerTurn;
-    private Player playerOne;
-    private Player playerTwo;
 
-    public Game(Player playerOne, Player playerTwo) {
+    public Game() {
         this.turns = 0;
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
     }
 
     public void increaseTurns() {
@@ -46,68 +41,119 @@ public final class Game {
         }
     }
 
-    public Player getCurrentPlayer() {
-        if (getPlayerTurn() == 1)
-            return playerOne;
-        return playerTwo;
-    }
-
-    public void endTurn(Table table, GameInput game) {
-        // verific daca exista carti frozen si le schimb flag-ul
-        table.defrostCards(getPlayerTurn());
-
-        // le resetez flag-ul cartilor care au atacat tura aceasta
-        table.rechargeCardsAttack();
-
-        Player currentPlayer = getCurrentPlayer();
-        currentPlayer.getHero().setAttackedThisTurn(false);
-
-        // incrementez numarul de ture jucate
-        increaseTurns();
-
-        setPlayerTurn(game.getStartGame().getStartingPlayer());
-
-        // daca s-a terminat o runda, fiecare jucator trage o carte
-        // si i se actualizeaza mana
-        if (getTurns() % 2 == 0) {
-            playerOne.addCardToHand();
-            playerTwo.addCardToHand();
-
-            int manaRound = Math.min(getTurns() / 2 + 1, 10);
-
-            playerOne.setPlayerMana(playerOne.getPlayerMana() + manaRound);
-            playerTwo.setPlayerMana(playerTwo.getPlayerMana() + manaRound);
-        }
-    }
-
     public void actionOutput(ObjectMapper objectMapper, ArrayNode output, Table table,
-                             GameInput game, ActionsInput action, GamesStats gamesStats) {
+                             GameInput game, Player playerOne, Player playerTwo,
+                             ActionsInput action, GamesStats gamesStats) {
         ObjectNode commandNode = objectMapper.createObjectNode();
         JsonOutput jsonOutput = new JsonOutput();
+
         if (action.getCommand().equals("getPlayerDeck")) {
-            Action.actionDeck(playerOne, playerTwo, output, action, jsonOutput);
+            ArrayList<GameCard> deck;
+            if (action.getPlayerIdx() == 1) {
+                deck = playerOne.getDeck();
+            } else {
+                deck = playerTwo.getDeck();
+            }
+            output.add(jsonOutput.generateOutput(action, deck));
         } else if (action.getCommand().equals("getPlayerHero")) {
-            Action.actionHero(playerOne, playerTwo, output, action, jsonOutput);
+            Hero hero;
+            if (action.getPlayerIdx() == 1) {
+                hero = playerOne.getHero();
+            } else {
+                hero = playerTwo.getHero();
+            }
+
+            output.add(jsonOutput.generateOutput(action, hero));
         } else if (action.getCommand().equals("getPlayerTurn")) {
             setPlayerTurn(game.getStartGame().getStartingPlayer());
             output.add(jsonOutput.generateOutput(action, getPlayerTurn()));
         } else if (action.getCommand().equals("getCardsInHand")) {
-            Action.actionHand(playerOne, playerTwo, output, action, jsonOutput);
-        } else if (action.getCommand().equals("endPlayerTurn")) {
-            endTurn(table, game);
-        } else if (action.getCommand().equals("placeCard")) {
-            Player currentPlayer = getCurrentPlayer();
-            Action.actionPlaceCard(currentPlayer, table, output, action, jsonOutput);
-        } else if (action.getCommand().equals("getPlayerMana")) {
-            Player player;
+            ArrayList<GameCard> hand;
             if (action.getPlayerIdx() == 1) {
-                player = playerOne;
+                hand = playerOne.getHand();
             } else {
-                player = playerTwo;
-          }
-            Action.actionGetMana(player, output, action, jsonOutput);
+                hand = playerTwo.getHand();
+            }
+
+            output.add(jsonOutput.generateOutput(action, hand));
+        } else if (action.getCommand().equals("endPlayerTurn")) {
+            // verific daca exista carti frozen si le schimb flag-ul
+            table.defrostCards(getPlayerTurn());
+
+            // le resetez flag-ul cartilor care au atacat tura aceasta
+            table.rechargeCardsAttack();
+
+            if (getPlayerTurn() == 1) {
+                playerOne.getHero().setAttackedThisTurn(false);
+            } else if (getPlayerTurn() == 2) {
+                playerTwo.getHero().setAttackedThisTurn(false);
+            }
+
+            // incrementez numarul de ture jucate
+            increaseTurns();
+
+            setPlayerTurn(game.getStartGame().getStartingPlayer());
+
+            // daca s-a terminat o runda, fiecare jucator trage o carte
+            // si i se actualizeaza mana
+            if (getTurns() % 2 == 0) {
+                playerOne.addCardToHand();
+                playerTwo.addCardToHand();
+
+                int manaRound = getTurns() / 2 + 1;
+                if (manaRound > 10) {
+                    manaRound = 10;
+                }
+                playerOne.setPlayerMana(playerOne.getPlayerMana() + manaRound);
+                playerTwo.setPlayerMana(playerTwo.getPlayerMana() + manaRound);
+            }
+        } else if (action.getCommand().equals("placeCard")) {
+            String error;
+            if (getPlayerTurn() == 1) {
+                GameCard cardFromHand = playerOne.getHand().get(action.getHandIdx());
+                error = table.addCardToTable(playerOne, cardFromHand);
+                if (error == null) {
+                    playerOne.setPlayerMana(playerOne.getPlayerMana() - cardFromHand.getMana());
+                    playerOne.getHand().remove(action.getHandIdx());
+                }
+            } else {
+                GameCard cardFromHand = playerTwo.getHand().get(action.getHandIdx());
+                error = table.addCardToTable(playerTwo, cardFromHand);
+                if (error == null) {
+                    playerTwo.setPlayerMana(playerTwo.getPlayerMana() - cardFromHand.getMana());
+                    playerTwo.getHand().remove(action.getHandIdx());
+                }
+            }
+            if (error != null) {
+                commandNode.put("command", action.getCommand());
+                commandNode.put("handIdx", action.getHandIdx());
+                commandNode.put("error", error);
+                output.add(commandNode);
+            }
+        } else if (action.getCommand().equals("getPlayerMana")) {
+            commandNode.put("command", action.getCommand());
+            commandNode.put("playerIdx", action.getPlayerIdx());
+            if (action.getPlayerIdx() == 1) {
+                commandNode.put("output", playerOne.getPlayerMana());
+            } else {
+                commandNode.put("output", playerTwo.getPlayerMana());
+            }
+            output.add(commandNode);
         } else if (action.getCommand().equals("getCardsOnTable")) {
-            output.add(jsonOutput.generateOutput(action, table));
+            commandNode.put("command", action.getCommand());
+            ArrayNode cardsOnTable = objectMapper.createArrayNode();
+
+            for (int rowIndex = 0; rowIndex < 4; rowIndex++) {
+                ArrayNode rowNode = objectMapper.createArrayNode();
+                ArrayList<GameCard> row = table.getRow(rowIndex);
+
+                for (GameCard card : row) {
+                    rowNode.add(card.createCardNode(objectMapper));
+                }
+                cardsOnTable.add(rowNode);
+            }
+            commandNode.set("output", cardsOnTable);
+            output.add(commandNode);
         } else if (action.getCommand().equals("cardUsesAttack")) {
             int attackerRow = action.getCardAttacker().getX();
             int attackerColumn = action.getCardAttacker().getY();
@@ -233,11 +279,39 @@ public final class Game {
             }
 
             if (error == null) {
-                attackerCard.useAbility(attackedCard);
-                if (attackedCard.getHealth() == 0) {
-                    table.removeCardFromTable(attackedRow, attackedColumn);
+                if (attackerCard.getName().equals("Disciple")) {
+                    attackedCard.setHealth(attackedCard.getHealth() + 2);
+
+                    attackerCard.setAttackedThisTurn(true);
+                } else if (attackerCard.getName().equals("Miraj")) {
+                    int healthAttacker = attackerCard.getHealth();
+                    int healthAttacked = attackedCard.getHealth();
+
+                    attackerCard.setHealth(healthAttacked);
+                    attackedCard.setHealth(healthAttacker);
+
+                    attackerCard.setAttackedThisTurn(true);
+                } else if (attackerCard.getName().equals("The Ripper")) {
+                    int attackDamageAttacked = attackedCard.getAttackDamage();
+                    attackedCard.setAttackDamage(attackDamageAttacked - 2);
+                    if (attackedCard.getAttackDamage() <= 0) {
+                        attackedCard.setAttackDamage(0);
+                    }
+
+                    attackerCard.setAttackedThisTurn(true);
+                } else if (attackerCard.getName().equals("The Cursed One")) {
+                    int healthAttacked = attackedCard.getHealth();
+                    int attackDamageAttacked = attackedCard.getAttackDamage();
+
+                    attackedCard.setHealth(attackDamageAttacked);
+                    attackedCard.setAttackDamage(healthAttacked);
+
+                    if (attackedCard.getHealth() == 0) {
+                        table.removeCardFromTable(attackedRow, attackedColumn);
+                    }
+
+                    attackerCard.setAttackedThisTurn(true);
                 }
-                attackerCard.setAttackedThisTurn(true);
             } else {
                 ObjectNode coordinatesAttacker = objectMapper.createObjectNode();
                 coordinatesAttacker.put("x", action.getCardAttacker().getX());
@@ -325,7 +399,12 @@ public final class Game {
             }
         } else if (action.getCommand().equals("useHeroAbility")) {
             String error = null;
-            Player currentPlayer = getCurrentPlayer();
+            Player currentPlayer;
+            if (getPlayerTurn() == 1) {
+                currentPlayer = playerOne;
+            } else {
+                currentPlayer = playerTwo;
+            }
 
             Hero currentHero = currentPlayer.getHero();
             if (currentPlayer.getPlayerMana() < currentHero.getMana()) {
@@ -351,8 +430,28 @@ public final class Game {
 
             if (error == null) {
                 int rowIndex = action.getAffectedRow();
-                currentHero.useAbility(rowIndex, table);
-
+                if (currentHero.getName().equals("Lord Royce")) {
+                    for (GameCard card : table.getRow(rowIndex)) {
+                        card.setFrozen(true);
+                    }
+                } else if (currentHero.getName().equals("Empress Thorina")) {
+                    GameCard destroyCard = table.getRow(rowIndex).get(0);
+                    for (GameCard card : table.getRow(rowIndex)) {
+                        if (card.getHealth() > destroyCard.getHealth()) {
+                            destroyCard = card;
+                        }
+                    }
+                    table.removeCardFromTable(rowIndex,
+                            table.getRow(rowIndex).indexOf(destroyCard));
+                } else if (currentHero.getName().equals("General Kocioraw")) {
+                    for (GameCard card : table.getRow(rowIndex)) {
+                        card.setAttackDamage(card.getAttackDamage() + 1);
+                    }
+                } else if (currentHero.getName().equals("King Mudface")) {
+                    for (GameCard card : table.getRow(rowIndex)) {
+                        card.setHealth(card.getHealth() + 1);
+                    }
+                }
                 currentPlayer.setPlayerMana(currentPlayer.getPlayerMana() - currentHero.getMana());
                 currentHero.setAttackedThisTurn(true);
             } else {
@@ -378,11 +477,17 @@ public final class Game {
             commandNode.set("output", frozenCardsOnTable);
             output.add(commandNode);
         } else if (action.getCommand().equals("getPlayerOneWins")) {
-            output.add(jsonOutput.generateOutput(action, gamesStats.getWinsPlayerOne()));
+            commandNode.put("command", action.getCommand());
+            commandNode.put("output", gamesStats.getWinsPlayerOne());
+            output.add(commandNode);
         } else if (action.getCommand().equals("getPlayerTwoWins")) {
-            output.add(jsonOutput.generateOutput(action, gamesStats.getWinsPlayerTwo()));
+            commandNode.put("command", action.getCommand());
+            commandNode.put("output", gamesStats.getWinsPlayerTwo());
+            output.add(commandNode);
         } else if (action.getCommand().equals("getTotalGamesPlayed")) {
-            output.add(jsonOutput.generateOutput(action, gamesStats.getGamesPlayed()));
+            commandNode.put("command", action.getCommand());
+            commandNode.put("output", gamesStats.getGamesPlayed());
+            output.add(commandNode);
         }
     }
 }
