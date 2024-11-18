@@ -5,6 +5,7 @@ import org.poo.fileio.*;
 import org.poo.main.Hero;
 
 
+import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -137,7 +138,25 @@ public final class Player {
         Collections.shuffle(playerOne.getDeck(), randomPlayerOne);
 
         // fiecare jucator primeste un erou
-        Hero heroPlayerOne = Hero.initializeHeroPlayerOne(startGame);
+        String heroName = startGame.getPlayerOneHero().getName();
+        CardInput heroCard = startGame.getPlayerOneHero();
+        Hero heroPlayerOne;
+        switch (heroName) {
+            case "Lord Royce":
+                heroPlayerOne = new LordRoyce(heroCard);
+                break;
+            case "Empress Thorina":
+                heroPlayerOne = new EmpressThorina(heroCard);
+                break;
+            case "King Mudface":
+                heroPlayerOne = new KingMudface(heroCard);
+                break;
+            case "General Kocioraw":
+                heroPlayerOne=  new GeneralKocioraw(heroCard);
+                break;
+            default:
+                heroPlayerOne = new Hero(heroCard);
+        }
 
         playerOne.setHero(heroPlayerOne);
         return playerOne;
@@ -164,7 +183,25 @@ public final class Player {
         Collections.shuffle(playerTwo.getDeck(), randomPlayerTwo);
 
         // fiecare jucator primeste un erou
-        Hero heroPlayerTwo = Hero.initializeHeroPlayerTwo(startGame);
+        String heroName = startGame.getPlayerTwoHero().getName();
+        CardInput heroCard = startGame.getPlayerTwoHero();
+        Hero heroPlayerTwo;
+        switch (heroName) {
+            case "Lord Royce":
+                heroPlayerTwo = new LordRoyce(heroCard);
+                break;
+            case "Empress Thorina":
+                heroPlayerTwo = new EmpressThorina(heroCard);
+                break;
+            case "King Mudface":
+                heroPlayerTwo = new KingMudface(heroCard);
+                break;
+            case "General Kocioraw":
+                heroPlayerTwo=  new GeneralKocioraw(heroCard);
+                break;
+            default:
+                heroPlayerTwo = new Hero(heroCard);
+        }
 
         playerTwo.setHero(heroPlayerTwo);
         return playerTwo;
