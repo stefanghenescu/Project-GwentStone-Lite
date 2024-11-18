@@ -5,7 +5,6 @@ public class GamesStats {
     private int winsPlayerTwo;
 
     public GamesStats() {
-
     }
 
     public int getWinsPlayerOne() {
