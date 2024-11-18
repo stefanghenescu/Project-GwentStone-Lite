@@ -3,6 +3,10 @@ package org.poo.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.poo.cardType.EmpressThorina;
+import org.poo.cardType.GeneralKocioraw;
+import org.poo.cardType.KingMudface;
+import org.poo.cardType.LordRoyce;
 import org.poo.fileio.CardInput;
 import org.poo.fileio.StartGameInput;
 
@@ -14,12 +18,7 @@ public class Hero extends GameCard {
         setAttackedThisTurn(false);
     }
 
-    public static Hero initializeHeroPlayerOne(StartGameInput startGame) {
-        return new Hero(startGame.getPlayerOneHero());
-    }
-
-    public static Hero initializeHeroPlayerTwo(StartGameInput startGame) {
-        return new Hero(startGame.getPlayerTwoHero());
+    public void useAbility(int affectedRow, Table table) {
     }
 
     @Override
