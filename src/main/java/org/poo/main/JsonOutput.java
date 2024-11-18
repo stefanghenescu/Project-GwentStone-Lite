@@ -40,10 +40,44 @@ public class JsonOutput {
         return commandNode;
     }
 
-    public ObjectNode generateOutput (ActionsInput action, int playerIndex) {
+    public ObjectNode generateOutput(ActionsInput action, int playerIndex) {
         ObjectNode commandNode = objectMapper.createObjectNode();
         commandNode.put("command", action.getCommand());
         commandNode.put("output", playerIndex);
+        return commandNode;
+    }
+
+    public ObjectNode generateOutput(ActionsInput action, String error) {
+        ObjectNode commandNode = objectMapper.createObjectNode();
+        commandNode.put("command", action.getCommand());
+        commandNode.put("handIdx", action.getHandIdx());
+        commandNode.put("error", error);
+        return commandNode;
+    }
+
+    public ObjectNode generateOutput(ActionsInput action, Player currentPlayer) {
+        ObjectNode commandNode = objectMapper.createObjectNode();
+        commandNode.put("command", action.getCommand());
+        commandNode.put("playerIdx", action.getPlayerIdx());
+        commandNode.put("output", currentPlayer.getPlayerMana());
+        return commandNode;
+    }
+
+    public ObjectNode generateOutput(ActionsInput action, Table table) {
+        ObjectNode commandNode = objectMapper.createObjectNode();
+        commandNode.put("command", action.getCommand());
+        ArrayNode cardsOnTable = objectMapper.createArrayNode();
+
+        for (int rowIndex = 0; rowIndex < 4; rowIndex++) {
+            ArrayNode rowNode = objectMapper.createArrayNode();
+            ArrayList<GameCard> row = table.getRow(rowIndex);
+
+            for (GameCard card : row) {
+                rowNode.add(card.createCardNode(objectMapper));
+            }
+            cardsOnTable.add(rowNode);
+        }
+        commandNode.set("output", cardsOnTable);
         return commandNode;
     }
 }
