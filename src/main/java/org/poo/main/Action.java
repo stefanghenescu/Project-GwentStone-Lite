@@ -40,5 +40,26 @@ public class Action {
         output.add(jsonOutput.generateOutput(action, hand));
     }
 
+    public static void actionPlaceCard(Player currentPlayer, Table table, ArrayNode output,
+                                       ActionsInput action, JsonOutput jsonOutput) {
+        String error;
+        GameCard cardFromHand = currentPlayer.getHand().get(action.getHandIdx());
+        error = table.addCardToTable(currentPlayer, cardFromHand);
+        if (error == null) {
+            currentPlayer.setPlayerMana(currentPlayer.getPlayerMana() - cardFromHand.getMana());
+            currentPlayer.getHand().remove(action.getHandIdx());
+        } else {
+            output.add(jsonOutput.generateOutput(action, error));
+        }
+    }
 
+    public static void actionGetMana(Player player, ArrayNode output,
+                                     ActionsInput action, JsonOutput jsonOutput) {
+        output.add(jsonOutput.generateOutput(action, player));
+    }
+
+    public static void actionGetCardsTable(ActionsInput action, Table table, ArrayNode output,
+                                          JsonOutput jsonOutput) {
+        output.add(jsonOutput.generateOutput(action, table));
+    }
 }
