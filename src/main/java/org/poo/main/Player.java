@@ -1,6 +1,6 @@
 package org.poo.main;
 
-import org.poo.cardType.Minion;
+import org.poo.cardType.*;
 import org.poo.fileio.*;
 import org.poo.main.Hero;
 
@@ -54,7 +54,29 @@ public final class Player {
     public void setDeck(final ArrayList<CardInput> deck) {
         ArrayList<GameCard> copyDeck = new ArrayList<>();
         for (CardInput card : deck) {
-            copyDeck.add(new Minion(card));
+            String cardType = card.getName();
+            switch (cardType) {
+                case "The Ripper":
+                    copyDeck.add(new TheRipper(card));
+                    break;
+                case "Miraj":
+                    copyDeck.add(new Miraj(card));
+                    break;
+                case "The Cursed One":
+                    copyDeck.add(new TheCursedOne(card));
+                    break;
+                case "Disciple":
+                    copyDeck.add(new Disciple(card));
+                    break;
+                case "Goliath":
+                    copyDeck.add(new Goliath(card));
+                    break;
+                case "Warden":
+                    copyDeck.add(new Warden(card));
+                    break;
+                default:
+                    copyDeck.add(new Minion(card));
+            }
         }
         this.deck = copyDeck;
     }
