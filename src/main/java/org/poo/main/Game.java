@@ -119,127 +119,15 @@ public final class Game {
                 output.add(jsonOutput.generateOutputCardAtPosition(action, table));
                 break;
             case "cardUsesAbility":
-                int attackerRow = action.getCardAttacker().getX();
-                int attackerColumn = action.getCardAttacker().getY();
-                GameCard attackerCard = table.getRow(attackerRow).get(attackerColumn);
-
-                int attackedRow = action.getCardAttacked().getX();
-                int attackedColumn = action.getCardAttacked().getY();
-                GameCard attackedCard = table.getRow(attackedRow).get(attackedColumn);
-
-                String error = null;
-                if (attackerCard.isFrozen()) {
-                    error = "Attacker card is frozen.";
-                } else if (attackerCard.hasAttackedThisTurn()) {
-                    error = "Attacker card has already attacked this turn.";
-                } else if (attackerCard.getName().equals("Disciple")) {
-                    if (getPlayerTurn() == 1 && action.getCardAttacked().getX() < 2) {
-                        error = "Attacked card does not belong to the current player.";
-                    } else if (getPlayerTurn() == 2 && action.getCardAttacked().getX() > 1) {
-                        error = "Attacked card does not belong to the current player.";
-                    }
-                } else {
-                    if (getPlayerTurn() == 1 && action.getCardAttacked().getX() > 1) {
-                        error = "Attacked card does not belong to the enemy.";
-                    } else if (getPlayerTurn() == 2 && action.getCardAttacked().getX() < 2) {
-                        error = "Attacked card does not belong to the enemy.";
-                    } else if (!attackedCard.isTank()) {
-                        error = errorAttackTank(table, error);
-                    }
-                }
-
-                if (error == null) {
-                    attackerCard.useAbility(attackedCard);
-                    if (attackedCard.getHealth() == 0) {
-                        table.removeCardFromTable(attackedRow, attackedColumn);
-                    }
-                    attackerCard.setAttackedThisTurn(true);
-                } else {
-                    output.add(jsonOutput.generateOutputCoordinates(action, error));
-                }
+                Action.actionUseAbility(action, table, getPlayerTurn(), output, jsonOutput);
                 break;
             case "useAttackHero":
-                attackerRow = action.getCardAttacker().getX();
-                attackerColumn = action.getCardAttacker().getY();
-                attackerCard = table.getRow(attackerRow).get(attackerColumn);
-
-                error = null;
-                if (attackerCard.isFrozen()) {
-                    error = "Attacker card is frozen.";
-                } else if (attackerCard.hasAttackedThisTurn()) {
-                    error = "Attacker card has already attacked this turn.";
-                } else {
-                    error = errorAttackTank(table, error);
-                }
-
-                if (error == null) {
-                    int attackDamageAttacker = attackerCard.getAttackDamage();
-
-                    if (getPlayerTurn() == 1) {
-                        int heroHealthPlayerTwo = playerTwo.getHero().getHealth();
-                        playerTwo.getHero().setHealth(heroHealthPlayerTwo - attackDamageAttacker);
-
-                        if (playerTwo.getHero().getHealth() <= 0) {
-                            gamesStats.incrementWinsPlayerOne();
-                            commandNode.put("gameEnded", "Player one killed the enemy hero.");
-                            output.add(commandNode);
-                        }
-                    } else if (getPlayerTurn() == 2) {
-                        int heroHealthPlayerOne = playerOne.getHero().getHealth();
-                        playerOne.getHero().setHealth(heroHealthPlayerOne - attackDamageAttacker);
-
-                        if (playerOne.getHero().getHealth() <= 0) {
-                            gamesStats.incrementWinsPlayerTwo();
-                            commandNode.put("gameEnded", "Player two killed the enemy hero.");
-                            output.add(commandNode);
-                        }
-                    }
-                    attackerCard.setAttackedThisTurn(true);
-                } else {
-                    ObjectNode coordinatesAttacker = objectMapper.createObjectNode();
-                    coordinatesAttacker.put("x", action.getCardAttacker().getX());
-                    coordinatesAttacker.put("y", action.getCardAttacker().getY());
-
-                    commandNode.put("command", action.getCommand());
-                    commandNode.set("cardAttacker", coordinatesAttacker);
-                    commandNode.put("error", error);
-                    output.add(commandNode);
-                }
+                Action.actionHeroUseAttack(action, table, playerOne, playerTwo, getPlayerTurn(),
+                                            output, gamesStats, jsonOutput);
                 break;
             case "useHeroAbility":
-                error = null;
-                currentPlayer = getCurrentPlayer();
-
-                Hero currentHero = currentPlayer.getHero();
-                if (currentPlayer.getPlayerMana() < currentHero.getMana()) {
-                    error = "Not enough mana to use hero's ability.";
-                } else if (currentHero.hasAttackedThisTurn()) {
-                    error = "Hero has already attacked this turn.";
-                } else if (currentHero.getName().equals("Lord Royce") ||
-                        currentHero.getName().equals("Empress Thorina")) {
-                    if (getPlayerTurn() == 1 && action.getAffectedRow() > 1) {
-                        error = "Selected row does not belong to the enemy.";
-                    } else if (getPlayerTurn() == 2 && action.getAffectedRow() < 2) {
-                        error = "Selected row does not belong to the enemy.";
-                    }
-                } else if (currentHero.getName().equals("General Kocioraw") ||
-                        currentHero.getName().equals("King Mudface")) {
-                    if (getPlayerTurn() == 1 && action.getAffectedRow() < 2) {
-                        error = "Selected row does not belong to the current player.";
-                    } else if (getPlayerTurn() == 2 && action.getAffectedRow() > 1) {
-                        error = "Selected row does not belong to the current player.";
-                    }
-                }
-
-                if (error == null) {
-                    int rowIndex = action.getAffectedRow();
-                    currentHero.useAbility(rowIndex, table);
-
-                    currentPlayer.setPlayerMana(currentPlayer.getPlayerMana() - currentHero.getMana());
-                    currentHero.setAttackedThisTurn(true);
-                } else {
-                    output.add(jsonOutput.generateOutputAffectedRow(action, error));
-                }
+                Action.actionHeroUseAbility(getCurrentPlayer(), action, getPlayerTurn(), table,
+                                            output, jsonOutput);
                 break;
             case "getFrozenCardsOnTable":
                 output.add(jsonOutput.generateOutputFrozenCards(action, table));
@@ -254,24 +142,5 @@ public final class Game {
                 output.add(jsonOutput.generateOutput(action, gamesStats.getGamesPlayed()));
                 break;
         }
-    }
-
-    private String errorAttackTank(Table table, String error) {
-        if (getPlayerTurn() == 1) {
-            for (GameCard card : table.getRow(1)) {
-                if (card.isTank()) {
-                    error = "Attacked card is not of type 'Tank'.";
-                    break;
-                }
-            }
-        } else if (getPlayerTurn() == 2) {
-            for (GameCard card : table.getRow(2)) {
-                if (card.isTank()) {
-                    error = "Attacked card is not of type 'Tank'.";
-                    break;
-                }
-            }
-        }
-        return error;
     }
 }
