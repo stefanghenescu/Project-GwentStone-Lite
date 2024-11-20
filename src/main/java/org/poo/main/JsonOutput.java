@@ -81,7 +81,7 @@ public class JsonOutput {
         return commandNode;
     }
 
-    public ObjectNode generateOutputCoordinates(ActionsInput action, String message) {
+    public ObjectNode generateErrorCardAttack(ActionsInput action, String message) {
         ObjectNode commandNode = objectMapper.createObjectNode();
         ObjectNode coordinatesAttacker = objectMapper.createObjectNode();
         coordinatesAttacker.put("x", action.getCardAttacker().getX());
@@ -99,7 +99,7 @@ public class JsonOutput {
         return commandNode;
     }
 
-    public ObjectNode generateOutputAffectedRow(ActionsInput action, String error) {
+    public ObjectNode generateErrorAffectedRow(ActionsInput action, String error) {
         ObjectNode commandNode = objectMapper.createObjectNode();
         commandNode.put("command", action.getCommand());
         commandNode.put("affectedRow", action.getAffectedRow());
@@ -139,6 +139,28 @@ public class JsonOutput {
         } else {
             GameCard card = table.getRow(action.getX()).get(action.getY());
             commandNode.set("output", card.createCardNode(objectMapper));
+        }
+        return commandNode;
+    }
+
+    public ObjectNode generateOutputErrorHeroAttack(ActionsInput action, String error) {
+        ObjectNode commandNode = objectMapper.createObjectNode();
+        ObjectNode coordinatesAttacker = objectMapper.createObjectNode();
+        coordinatesAttacker.put("x", action.getCardAttacker().getX());
+        coordinatesAttacker.put("y", action.getCardAttacker().getY());
+
+        commandNode.put("command", action.getCommand());
+        commandNode.set("cardAttacker", coordinatesAttacker);
+        commandNode.put("error", error);
+        return commandNode;
+    }
+
+    public ObjectNode generateOutputGameStats(int playerKilled) {
+        ObjectNode commandNode = objectMapper.createObjectNode();
+        if (playerKilled == 1) {
+            commandNode.put("gameEnded", "Player one killed the enemy hero.");
+        } else {
+            commandNode.put("gameEnded", "Player two killed the enemy hero.");
         }
         return commandNode;
     }
