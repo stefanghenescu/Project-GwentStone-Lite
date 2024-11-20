@@ -12,7 +12,6 @@ import java.util.Random;
 
 public final class Player {
     private int index;
-    private int nrCardsInDeck;
     private int shuffleSeed;
     private ArrayList<GameCard> deck;
     private Hero hero;
@@ -30,14 +29,6 @@ public final class Player {
 
     public void setIndex(final int index) {
         this.index = index;
-    }
-
-    public int getNrCardsInDeck() {
-        return nrCardsInDeck;
-    }
-
-    public void setNrCardsInDeck(final int nrCardsInDeck) {
-        this.nrCardsInDeck = nrCardsInDeck;
     }
 
     public int getShuffleSeed() {
@@ -107,13 +98,11 @@ public final class Player {
     }
 
     public void addCardToHand() {
-        if (this.getNrCardsInDeck() > 0) {
+        if (!deck.isEmpty()) {
             // adaugam o carte din deck in mana
             this.getHand().add(this.getDeck().get(0));
             // scoatem o din deck
             this.getDeck().remove(0);
-            // actualizam dimensiunea deck-ului
-            this.setNrCardsInDeck(this.getNrCardsInDeck() - 1);
         }
     }
 
@@ -122,9 +111,6 @@ public final class Player {
         playerOne.setIndex(1);
 
         StartGameInput startGame = game.getStartGame();
-
-        // aflam cate carti sunt in deck-ul fiecarui jucator
-        playerOne.setNrCardsInDeck(inputData.getPlayerOneDecks().getNrCardsInDeck());
 
         // shuffleSeed-ul fiecarui joc
         playerOne.setShuffleSeed(startGame.getShuffleSeed());
@@ -167,9 +153,6 @@ public final class Player {
         playerTwo.setIndex(2);
 
         StartGameInput startGame = game.getStartGame();
-
-        // aflam cate carti sunt in deck-ul fiecarui jucator
-        playerTwo.setNrCardsInDeck(inputData.getPlayerTwoDecks().getNrCardsInDeck());
 
         // shuffleSeed-ul fiecarui joc
         playerTwo.setShuffleSeed(startGame.getShuffleSeed());
