@@ -21,18 +21,6 @@ public final class Game {
         this.playerTwo = playerTwo;
     }
 
-    public void increaseTurns() {
-        turns++;
-    }
-
-    public int getTurns() {
-        return turns;
-    }
-
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-
     public void setPlayerTurn(int startingPlayer) {
         if (getTurns() % 2 == 0) {
             playerTurn = startingPlayer;
@@ -142,5 +130,18 @@ public final class Game {
                 output.add(jsonOutput.generateOutput(action, gamesStats.getGamesPlayed()));
                 break;
         }
+    }
+
+
+    public void increaseTurns() {
+        turns++;
+    }
+
+    public int getTurns() {
+        return turns;
+    }
+
+    public int getPlayerTurn() {
+        return playerTurn;
     }
 }
