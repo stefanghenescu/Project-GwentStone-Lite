@@ -8,8 +8,7 @@ import org.poo.main.GameCard;
  */
 public final class Disciple extends Minion {
     /**
-     *  As Disciple extends Minion class, and we call super to initialize the
-     *  attributes of Minion class
+     *  As Disciple extends Minion class, and we use super to call the Minion constructor
      * @param cardInput the card input
      */
     public Disciple(final CardInput cardInput) {
