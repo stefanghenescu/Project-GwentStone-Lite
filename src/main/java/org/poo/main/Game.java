@@ -6,70 +6,104 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.ActionsInput;
 import org.poo.fileio.GameInput;
 
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-
+/**
+ * Class that represents one game
+ * From here the game is played and every action is made calling the proper method
+ */
 public final class Game {
+    static final int MAX_MANA_PER_ROUND = 10;
+    static final int PLAYER_TURN_XOR = 3;
+
     private int turns;
     private int playerTurn;
     private Player playerOne;
     private Player playerTwo;
 
-    public Game(Player playerOne, Player playerTwo) {
+    public Game(final Player playerOne, final Player playerTwo) {
         this.turns = 0;
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
     }
 
-    public void setPlayerTurn(int startingPlayer) {
+    /**
+     * Method that sets the player whose turn is to play
+     * This is done by checking if the number of turns is even or odd
+     * If it is even then the player that started the game plays
+     * If it is odd then the other player plays
+     * @param startingPlayer the player that starts the game
+     */
+    public void setPlayerTurn(final int startingPlayer) {
         if (getTurns() % 2 == 0) {
             playerTurn = startingPlayer;
         } else {
-            /* xor intre 11(baza 2) = 3(baza 10) si index startingPlayer
+            /* xor between 11 (base 2) = 3 (base 10) and index startingPlayer
             3 ^ 1 = 2
             3 ^ 2 = 1
-            daca numarul de ture este impar atunci e randul celuilalt jucator fata
-            de cel ce a inceput jocul */
-            playerTurn = (3 ^ startingPlayer);
+            if the number of turns is odd then it is the other player's turn
+            by the one who started the game */
+            playerTurn = (PLAYER_TURN_XOR ^ startingPlayer);
         }
     }
 
+    /**
+     * Method that returns the current player
+     * @return the player whose turn is to play
+     */
     public Player getCurrentPlayer() {
-        if (getPlayerTurn() == 1)
+        if (getPlayerTurn() == 1) {
             return playerOne;
+        }
         return playerTwo;
     }
 
-    public void endTurn(Table table, GameInput game) {
-        // verific daca exista carti frozen si le schimb flag-ul
+    /**
+     * Method that ends the turn of the current player
+     * @param table the table where the game is being played
+     * @param game the input of the game
+     */
+    public void endTurn(final Table table, final GameInput game) {
+        // check if there are frozen books and change their flag
         table.defrostCards(getPlayerTurn());
 
-        // le resetez flag-ul cartilor care au atacat tura aceasta
+        // reset the flag of the cards that attacked this turn
         table.rechargeCardsAttack();
 
         Player currentPlayer = getCurrentPlayer();
         currentPlayer.getHero().setAttackedThisTurn(false);
 
-        // incrementez numarul de ture jucate
+        // increment the number of turns played
         increaseTurns();
 
         setPlayerTurn(game.getStartGame().getStartingPlayer());
 
-        // daca s-a terminat o runda, fiecare jucator trage o carte
-        // si i se actualizeaza mana
+
+        // if a round is over, each player draws a card
+        // and his hand is updated
         if (getTurns() % 2 == 0) {
             playerOne.addCardToHand();
             playerTwo.addCardToHand();
 
-            int manaRound = Math.min(getTurns() / 2 + 1, 10);
+            int manaRound = Math.min(getTurns() / 2 + 1, MAX_MANA_PER_ROUND);
 
             playerOne.setPlayerMana(playerOne.getPlayerMana() + manaRound);
             playerTwo.setPlayerMana(playerTwo.getPlayerMana() + manaRound);
         }
     }
 
-    public void actionOutput(ObjectMapper objectMapper, ArrayNode output, Table table,
-                             GameInput game, ActionsInput action, GamesStats gamesStats) {
+    /**
+     * Method that plays the game and makes the proper action
+     * depending on the command of the action
+     * It calls the proper method to make the action
+     * @param objectMapper the object mapper used to create the output
+     * @param output the output of the game
+     * @param table the table where the game is being played
+     * @param game the input of the game
+     * @param action the action that is being performed
+     * @param gamesStats the statistics of the games
+     */
+    public void actionOutput(final ObjectMapper objectMapper, final ArrayNode output,
+                                    final Table table, final GameInput game,
+                                    final ActionsInput action, final GamesStats gamesStats) {
         ObjectNode commandNode = objectMapper.createObjectNode();
         JsonOutput jsonOutput = new JsonOutput();
         switch (action.getCommand()) {
@@ -129,10 +163,14 @@ public final class Game {
             case "getTotalGamesPlayed":
                 output.add(jsonOutput.generateOutput(action, gamesStats.getGamesPlayed()));
                 break;
+            default:
+                break;
         }
     }
 
-
+    /**
+     * Method that increments the number of turns played
+     */
     public void increaseTurns() {
         turns++;
     }
