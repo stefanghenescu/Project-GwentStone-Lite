@@ -1,6 +1,6 @@
 package org.poo.main;
 
-import com.sun.source.tree.BreakTree;
+import org.poo.cardType.Hero;
 import org.poo.fileio.ActionsInput;
 
 public class ErrorHandle {

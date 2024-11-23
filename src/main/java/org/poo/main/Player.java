@@ -2,10 +2,9 @@ package org.poo.main;
 
 import org.poo.cardType.*;
 import org.poo.fileio.*;
-import org.poo.main.Hero;
+import org.poo.cardType.Hero;
 
 
-import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
