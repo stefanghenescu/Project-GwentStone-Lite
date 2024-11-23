@@ -9,12 +9,8 @@ public final class CardInput {
     private String description;
     private ArrayList<String> colors;
     private String name;
-    private boolean frozen;
-    private boolean attackedThisTurn;
 
     public CardInput() {
-        frozen = false;
-        attackedThisTurn = false;
     }
 
     public int getMana() {
@@ -63,26 +59,6 @@ public final class CardInput {
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public boolean isFrozen() {
-        return frozen;
-    }
-
-    public void setFrozen(final boolean frozen) {
-        this.frozen = frozen;
-    }
-
-    public boolean hasAttackedThisTurn() {
-        return attackedThisTurn;
-    }
-
-    public void setAttackedThisTurn(boolean attackedThisTurn) {
-        this.attackedThisTurn = attackedThisTurn;
-    }
-
-    public boolean isTank() {
-        return this.getName().equals("Goliath") || this.getName().equals("Warden");
     }
 
     @Override
