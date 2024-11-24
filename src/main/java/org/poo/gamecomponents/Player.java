@@ -1,7 +1,18 @@
-package org.poo.main;
+package org.poo.gamecomponents;
 
-import org.poo.cardType.*;
+import org.poo.cardtype.*;
+import org.poo.cardtype.heroes.EmpressThorina;
+import org.poo.cardtype.heroes.GeneralKocioraw;
+import org.poo.cardtype.heroes.KingMudface;
+import org.poo.cardtype.heroes.LordRoyce;
+import org.poo.cardtype.specialminions.Disciple;
+import org.poo.cardtype.specialminions.Miraj;
+import org.poo.cardtype.specialminions.TheCursedOne;
+import org.poo.cardtype.specialminions.TheRipper;
+import org.poo.cardtype.tanks.Goliath;
+import org.poo.cardtype.tanks.Warden;
 import org.poo.fileio.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;

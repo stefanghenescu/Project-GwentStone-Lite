@@ -1,6 +1,7 @@
-package org.poo.cardType;
+package org.poo.cardtype.specialminions;
+import org.poo.cardtype.Minion;
 import org.poo.fileio.CardInput;
-import org.poo.main.GameCard;
+import org.poo.gamecomponents.GameCard;
 
 /**
  * This class represents a Miraj card game

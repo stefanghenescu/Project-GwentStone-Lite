@@ -1,4 +1,4 @@
-package org.poo.main;
+package org.poo.gamecomponents;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

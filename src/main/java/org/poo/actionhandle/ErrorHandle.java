@@ -1,7 +1,10 @@
-package org.poo.main;
+package org.poo.actionhandle;
 
-import org.poo.cardType.Hero;
+import org.poo.cardtype.Hero;
 import org.poo.fileio.ActionsInput;
+import org.poo.gamecomponents.GameCard;
+import org.poo.gamecomponents.Player;
+import org.poo.gamecomponents.Table;
 
 /**
  * Class that handles errors in the game and returns the appropriate error message.
@@ -110,8 +113,8 @@ public final class ErrorHandle {
      * @return an error message if there is an error, otherwise null
      */
     public static String errorHeroUseAbility(final Player currentPlayer, final Hero currentHero,
-                                                    final ActionsInput action,
-                                                    final int playerTurn) {
+                                             final ActionsInput action,
+                                             final int playerTurn) {
         String error = null;
         if (currentPlayer.getPlayerMana() < currentHero.getMana()) {
             error = "Not enough mana to use hero's ability.";

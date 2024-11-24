@@ -1,4 +1,5 @@
-package org.poo.cardType;
+package org.poo.cardtype.tanks;
+import org.poo.cardtype.Minion;
 import org.poo.fileio.CardInput;
 
 /**

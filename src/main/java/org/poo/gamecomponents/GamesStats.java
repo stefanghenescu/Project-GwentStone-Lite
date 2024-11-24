@@ -1,4 +1,4 @@
-package org.poo.main;
+package org.poo.gamecomponents;
 
 public class GamesStats {
     private int winsPlayerOne;

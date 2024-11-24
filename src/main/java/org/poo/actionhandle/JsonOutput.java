@@ -1,9 +1,12 @@
-package org.poo.main;
+package org.poo.actionhandle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.ActionsInput;
+import org.poo.gamecomponents.GameCard;
+import org.poo.gamecomponents.Player;
+import org.poo.gamecomponents.Table;
 
 import java.util.ArrayList;
 

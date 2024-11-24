@@ -1,8 +1,9 @@
-package org.poo.cardType;
+package org.poo.cardtype.heroes;
 
+import org.poo.cardtype.Hero;
 import org.poo.fileio.CardInput;
-import org.poo.main.GameCard;
-import org.poo.main.Table;
+import org.poo.gamecomponents.GameCard;
+import org.poo.gamecomponents.Table;
 
 /**
  * This class represents a GeneralKocioraw card game

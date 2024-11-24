@@ -10,6 +10,10 @@ import org.poo.fileio.ActionsInput;
 import org.poo.fileio.CardInput;
 import org.poo.fileio.GameInput;
 import org.poo.fileio.Input;
+import org.poo.gamecomponents.Game;
+import org.poo.gamecomponents.GamesStats;
+import org.poo.gamecomponents.Player;
+import org.poo.gamecomponents.Table;
 
 import java.io.File;
 import java.io.IOException;

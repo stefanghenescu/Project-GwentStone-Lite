@@ -1,8 +1,12 @@
-package org.poo.main;
+package org.poo.actionhandle;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.cardType.Hero;
+import org.poo.cardtype.Hero;
 import org.poo.fileio.ActionsInput;
+import org.poo.gamecomponents.GameCard;
+import org.poo.gamecomponents.GamesStats;
+import org.poo.gamecomponents.Player;
+import org.poo.gamecomponents.Table;
 
 import java.util.ArrayList;
 
@@ -22,8 +26,8 @@ public final class Action {
      * @param jsonOutput the JSON output object
      */
     public static void actionDeck(final Player playerOne, final Player playerTwo,
-                                        final ArrayNode output, final ActionsInput action,
-                                        final JsonOutput jsonOutput) {
+                                  final ArrayNode output, final ActionsInput action,
+                                  final JsonOutput jsonOutput) {
         ArrayList<GameCard> deck;
         if (action.getPlayerIdx() == 1) {
             deck = playerOne.getDeck();
@@ -207,8 +211,8 @@ public final class Action {
      */
     public static void
     actionUseAttackOnHero(final ActionsInput action, final Table table, final Player playerOne,
-                            final Player playerTwo, final int playerTurn, final ArrayNode output,
-                            final GamesStats gamesStats, final JsonOutput jsonOutput) {
+                          final Player playerTwo, final int playerTurn, final ArrayNode output,
+                          final GamesStats gamesStats, final JsonOutput jsonOutput) {
         // get the attacker card
         int attackerRow = action.getCardAttacker().getX();
         int attackerColumn = action.getCardAttacker().getY();
