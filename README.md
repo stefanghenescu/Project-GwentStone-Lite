@@ -16,7 +16,7 @@ This package defines the various types of cards used in the game.
 It is divided into three sub-packages:
 
 - **`heroes`**:  
-  Contains type of heroes classes that define each one's ability. Classes include:
+  Contains type of hero classes that define each one's ability. Classes included:
   - **`EmpressThorina`**
   - **`GeneralKocioraw`**
   - **`KingMudface`**
@@ -24,7 +24,7 @@ It is divided into three sub-packages:
 
 
 - **`specialminions`**:  
-  Represents minion cards with abilities. Classes include:
+  Represents minion cards with abilities. Classes included:
   - **`Disciple`**
   - **`Miraj`**
   - **`TheCursedOne`**
@@ -32,13 +32,13 @@ It is divided into three sub-packages:
 
 
 - **`tanks`**:  
-  Includes tanks classes. Classes include:
+  Includes minions that are tanks: Classes included:
   - **`Goliath`**
   - **`Warden`**
 
 We also have the following classes that every one that I listed before extends:
-- **`Hero`** (a base class for all other hero types).
-- **`Minion`** (a base class for all other minion types).
+- **`Hero`** (a base class for all the other hero types classes).
+- **`Minion`** (a base class for all the other minion types classes).
 
 2. ### The _**gamecomponents**_ package:
 This package defines the elements of the game. It contains:
@@ -64,13 +64,13 @@ This package defines the elements of the game. It contains:
 
 3. ### The _actionhandle_ package:
 This package manages game actions and error handling. It includes:
-- **`Action`**: Responsible for handling specific actions performed by players during the game (e.g., card attacks, spells).
+- **`Action`**: Responsible for handling specific actions performed by players during the game (e.g., card attacks, abilities).
 
 
-- **`ErrorHandle`**: Ensures rules and constraints are respected during gameplay. For instance, it validates actions such as placing cards on the table or attacking.
+- **`ErrorHandle`**: Ensures rules are respected during the game. For instance, it validates actions such as placing cards on the table or attacking.
 
 
-- **`JsonOutput`**: A utility class for formatting game commands and results into JSON format for input/output operations.
+- **`JsonOutput`**: A utility class for formatting game commands and results into JSON format.
 
 4. ### The _main_ package contains the following classes:
    The main entry point for the application. It includes:
@@ -80,17 +80,16 @@ This package manages game actions and error handling. It includes:
 - **`Test`**: Class used for testing
 
 ## Code Flow:
-Starting from the main class we create start to create the games. For every game we then  
-create the players and the table. After every component is created we start the game.
+Starting from the main class we create the games. For every game we then  
+create the players (decks) and the table. After every component is created we start the game.
 
-In the Game class, all actions are managed by a public method that processes the command  
+In the Game class, all actions are managed by a method that processes the command  
 names with a switch case. From here we call the static methods from the Action class, in  
 order to perform every action. These methods can call, depending on the command, other  
 methods from the Player class, Table class, Hero class, Minion class or classes that  
 extend these ones.
 
-The output is generated with the help of classes like `JsonNode` and `ErrorHandle`, which  
-structure and manage the results.
+The output is generated with the help of classes like `JsonNode` and `ErrorHandle`.
 
 ## Project Feedback
 
