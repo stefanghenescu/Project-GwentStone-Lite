@@ -22,12 +22,14 @@ It is divided into three sub-packages:
   - **`KingMudface`**
   - **`LordRoyce`**
 
+
 - **`specialminions`**:  
   Represents minion cards with abilities. Classes include:
   - **`Disciple`**
   - **`Miraj`**
   - **`TheCursedOne`**
   - **`TheRipper`**
+
 
 - **`tanks`**:  
   Includes tanks classes. Classes include:
@@ -42,28 +44,40 @@ We also have the following classes that every one that I listed before extends:
 This package defines the elements of the game. It contains:
 - **`Player`**:  
   Represents a player in the game. It handles player-specific attributes such as their deck, mana, hero, and cards in hand.
+
+
 - **`GameCard`**:  
   A base class for all card types in the game. This class is like a copy of CardInput class.
+
+
 - **`Game`**:  
   Manages the flow of a single match. It handles the actions in a game with a switch statement that calls the appropriate method for each command.  
   It also takes care of the turns of the players.
+
+
 - **`GameStats`**:  
   Tracks statistics across multiple games, such as the total number of games played and individual player victories.
+
+
 - **`Table`**:  
   Represents the table where players place cards. It provides methods to add, remove, defrost cards on the table.
 
 3. ### The _actionhandle_ package:
 This package manages game actions and error handling. It includes:
 - **`Action`**: Responsible for handling specific actions performed by players during the game (e.g., card attacks, spells).
+
+
 - **`ErrorHandle`**: Ensures rules and constraints are respected during gameplay. For instance, it validates actions such as placing cards on the table or attacking.
+
+
 - **`JsonOutput`**: A utility class for formatting game commands and results into JSON format for input/output operations.
 
 4. ### The _main_ package contains the following classes:
    The main entry point for the application. It includes:
-- **`Main`**:  
-  The primary class for running the games. From here we start every game with its setup and actions.
-- **`Test`**:  
-  Class used for testing
+- **`Main`**: The primary class for running the games. From here we start every game with its setup and actions.
+
+
+- **`Test`**: Class used for testing
 
 ## Code Flow:
 Starting from the main class we create start to create the games. For every game we then  
