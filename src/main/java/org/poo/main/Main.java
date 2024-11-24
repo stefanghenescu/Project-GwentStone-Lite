@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.ActionsInput;
+import org.poo.fileio.CardInput;
 import org.poo.fileio.GameInput;
 import org.poo.fileio.Input;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -73,8 +75,21 @@ public final class Main {
         GamesStats gamesStats = new GamesStats();
 
         for (GameInput gameInput : inputData.getGames()) {
-            Player playerOne = Player.initializePlayerOne(gameInput, inputData);
-            Player playerTwo = Player.initializePlayerTwo(gameInput, inputData);
+            int playerOneDeckIdx = gameInput.getStartGame().getPlayerOneDeckIdx();
+            ArrayList<CardInput> deckPlayerOne = inputData.getPlayerOneDecks().getDecks().
+                                                            get(playerOneDeckIdx);
+
+            CardInput heroPlayerOne = gameInput.getStartGame().getPlayerOneHero();
+            int shuffleSeed = gameInput.getStartGame().getShuffleSeed();
+
+            int playerTwoDeckIdx = gameInput.getStartGame().getPlayerTwoDeckIdx();
+            ArrayList<CardInput> deckPlayerTwo = inputData.getPlayerTwoDecks().getDecks().
+                                                            get(playerTwoDeckIdx);
+
+            CardInput heroPlayerTwo = gameInput.getStartGame().getPlayerTwoHero();
+
+            Player playerOne = new Player(1, shuffleSeed, deckPlayerOne, heroPlayerOne);
+            Player playerTwo = new Player(2, shuffleSeed, deckPlayerTwo, heroPlayerTwo);
 
             playerOne.addCardToHand();
             playerTwo.addCardToHand();
