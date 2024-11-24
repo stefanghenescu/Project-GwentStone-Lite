@@ -132,7 +132,7 @@ public final class Game {
                 Action.actionGetMana(player, output, action, jsonOutput);
                 break;
             case "getCardsOnTable":
-                output.add(jsonOutput.generateOutput(action, table));
+                output.add(jsonOutput.generateOutputTable(action, table));
                 break;
             case "cardUsesAttack":
                 Action.actionUseAttack(action, table, getPlayerTurn(), output, jsonOutput);
@@ -144,7 +144,7 @@ public final class Game {
                 Action.actionUseAbility(action, table, getPlayerTurn(), output, jsonOutput);
                 break;
             case "useAttackHero":
-                Action.actionHeroUseAttack(action, table, playerOne, playerTwo, getPlayerTurn(),
+                Action.actionUseAttackOnHero(action, table, playerOne, playerTwo, getPlayerTurn(),
                                             output, gamesStats, jsonOutput);
                 break;
             case "useHeroAbility":

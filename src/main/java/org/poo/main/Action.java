@@ -30,7 +30,7 @@ public final class Action {
         } else {
             deck = playerTwo.getDeck();
         }
-        output.add(jsonOutput.generateOutput(action, deck));
+        output.add(jsonOutput.generateOutputCards(action, deck));
     }
 
     /**
@@ -50,7 +50,7 @@ public final class Action {
         } else {
             hero = playerTwo.getHero();
         }
-        output.add(jsonOutput.generateOutput(action, hero));
+        output.add(jsonOutput.generateOutputHero(action, hero));
     }
 
     /**
@@ -71,7 +71,7 @@ public final class Action {
             hand = playerTwo.getHand();
         }
 
-        output.add(jsonOutput.generateOutput(action, hand));
+        output.add(jsonOutput.generateOutputCards(action, hand));
     }
 
     /**
@@ -98,7 +98,7 @@ public final class Action {
             currentPlayer.setPlayerMana(currentPlayer.getPlayerMana() - cardFromHand.getMana());
             currentPlayer.getHand().remove(action.getHandIdx());
         } else {
-            output.add(jsonOutput.generateOutput(action, error));
+            output.add(jsonOutput.generateOutputTableError(action, error));
         }
     }
 
@@ -111,7 +111,7 @@ public final class Action {
      */
     public static void actionGetMana(final Player player, final ArrayNode output,
                                         final ActionsInput action, final JsonOutput jsonOutput) {
-        output.add(jsonOutput.generateOutput(action, player));
+        output.add(jsonOutput.generateOutputMana(action, player));
     }
 
     /**
@@ -206,7 +206,7 @@ public final class Action {
      * @param jsonOutput the JSON output object
      */
     public static void
-    actionHeroUseAttack(final ActionsInput action, final Table table, final Player playerOne,
+    actionUseAttackOnHero(final ActionsInput action, final Table table, final Player playerOne,
                             final Player playerTwo, final int playerTurn, final ArrayNode output,
                             final GamesStats gamesStats, final JsonOutput jsonOutput) {
         // get the attacker card
@@ -244,12 +244,12 @@ public final class Action {
             }
             // add the game stats to the output if the game is over
             if (playerKilled != 0) {
-                output.add(jsonOutput.generateOutputGameStats(playerKilled));
+                output.add(jsonOutput.generateOutputGameEnd(playerKilled));
             }
             attackerCard.setAttackedThisTurn(true);
         } else {
             // add the error to the output if the attack can't be done
-            output.add(jsonOutput.generateOutputErrorHeroAttack(action, error));
+            output.add(jsonOutput.generateOutputErrorAttackOnHero(action, error));
         }
     }
 
@@ -281,7 +281,7 @@ public final class Action {
             currentHero.setAttackedThisTurn(true);
         } else {
             // add the error to the output if the ability can't be used
-            output.add(jsonOutput.generateErrorAffectedRow(action, error));
+            output.add(jsonOutput.generateErrorAbility(action, error));
         }
     }
 }
