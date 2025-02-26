@@ -1,5 +1,5 @@
 # GwentStone Lite
-### Ghenescu Stefan 322CA
+### Ghenescu Stefan
 
 ## Introduction:
 
