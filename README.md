@@ -1,4 +1,4 @@
-# Tema 0 - GwentStone Lite
+# GwentStone Lite
 ### Ghenescu Stefan 322CA
 
 ## Introduction:
